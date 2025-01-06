@@ -1,10 +1,11 @@
 import requests
 import cn2an
 import re
+import os
 class HASS:
     def __init__(self):
-        self.url = "https://hass.brooktudou.top:6443"
-        self.token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkZmI0ZTNkZDcxYTQ0N2Q0OTBjZDAyMWE5NjNiYWY5MSIsImlhdCI6MTczNjA0ODUxMiwiZXhwIjoyMDUxNDA4NTEyfQ.Uh74J6EqmQZbFfo8eDV0gJWwaev02PQg_OgvymwC_lc'
+        self.url = os.getenv("HASS_URL")
+        self.token = os.getenv("HASS_TOKEN")
         self.headers = {
             "Authorization": f"Bearer {self.token}",
             "content-type": "application/json",
