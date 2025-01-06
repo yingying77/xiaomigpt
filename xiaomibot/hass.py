@@ -26,7 +26,14 @@ class HASS:
             "language": "zh-CN",
             }
         response = requests.post(url=url, headers=self.headers, json=data)
-        return response.json().get("response").get("speech",{}).get("plain",{}).get("speech",{})
+        print(f"get:{url},data:{data}")
+        print(response)
+        try:
+            speech = response.json().get("response").get("speech",{}).get("plain",{}).get("speech",{})
+            return speech
+        except:
+            print("hass error")
+        return None
     
 if __name__ == "__main__":
     hass = HASS()
