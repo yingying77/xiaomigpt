@@ -6,7 +6,6 @@ import time
 from miservice import MiAccount,MiIOService,MiNAService,miio_command
 from aiohttp import ClientSession,ClientTimeout
 from pathlib import Path
-from rich.logging import RichHandler
 from xiaomibot.config import (
     COOKIE_TEMPLATE,
     LATEST_ASK_API,
@@ -32,9 +31,9 @@ class MIGPT:
         self.hass = HASS()
 
         # setup logger
+        logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         self.log = logging.getLogger("xiaogpt")
         self.log.setLevel(logging.DEBUG if config.verbose else logging.INFO)
-        self.log.addHandler(RichHandler())
         self.log.debug(config)
         self.mi_session = ClientSession()
 
@@ -55,11 +54,11 @@ class MIGPT:
             str(self.mi_token_home)
             )
         self.log.info(self.config.account)
-        print(self.config.password)
+        self.log.info(self.config.password)
         if self.config.account == None or self.config.password==None :
            raise Exception((f"未获取到账号密码")  )
         
-        print(f"登录：{self.config.account} {self.config.password}")
+        self.log.info(f"登录：{self.config.account} {self.config.password}")
         await account.login("micoapi")
         self.mina_service = MiNAService(account)
         self.miio_service = MiIOService(account)
@@ -70,7 +69,7 @@ class MIGPT:
                     for d in devices
                     if d["model"].endswith(self.config.hardware.lower())
         )
-        print(f"mi_did: {self.config.mi_did}")
+        self.log.info(f"mi_did: {self.config.mi_did}")
         hardware_data = await self.mina_service.device_list()
         for h in hardware_data:
             if did := self.config.mi_did:
@@ -84,7 +83,7 @@ class MIGPT:
                 break
         else:
             raise Exception(f"未找到设备 {self.config.hardware}")
-        print(f"device_id: {self.device_id}")
+        self.log.info(f"device_id: {self.device_id}")
         #获取cookie
         self.mi_session.cookie_jar.update_cookies(self.get_cookie()) 
         self.cookie_jar = self.mi_session.cookie_jar
@@ -124,7 +123,7 @@ class MIGPT:
             try:
                 data = await r.json()
             except Exception:
-                print("数据错误，尝试初始化数据")
+                self.log.info("数据错误，尝试初始化数据")
                 if i == 1: 
                     self.log.debug("Got latest ask from xiaoai: %s", data)
                     await self.init_all_data()
@@ -157,29 +156,29 @@ class MIGPT:
             query = new_record.get("query","").strip()
             #ou-=匹配提示词
             query = re.sub(rf"^({'|'.join(self.config.keyword)})", "", query)
-            print(query)
-            print("-" * 20)
-            print("问题：" + query)
+            self.log.info(query)
+            self.log.info("-" * 20)
+            self.log.info("问题：" + query)
             #处理hass会话
             if query.lower().startswith(self.config.keyword_hass):
                 await self.do_tts("..") #静音小爱
                 query = query.replace("设置","")
                 answer = self.hass.ask(query)
-                print(f"hass_ask: {query}  answer: {answer}")
+                self.log.info(f"hass_ask: {query}  answer: {answer}")
                 await self.do_tts(answer)
             #处理播放器会话
 
             try:
                 answer = new_record.get("answers", [])[0]
                 if answer.get("type") == "TTS":
-                    print("小爱回答：[tts]" + answer.get("tts", {}).get("text"))
+                    self.log.info("小爱回答：[tts]" + answer.get("tts", {}).get("text"))
                 elif answer.get("type") == "LLM":
-                    print("小爱回答：[llm]" + answer.get("llm", {}).get("text"))
+                    self.log.info("小爱回答：[llm]" + answer.get("llm", {}).get("text"))
             except IndexError:
-                print("小爱没回")
+                self.log.info("小爱没回")
                 
             else:
-                print("回答完毕")
+                self.log.info("回答完毕")
             
 
     async def wakeup_xiaoai(self):
