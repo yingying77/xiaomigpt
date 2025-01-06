@@ -1,4 +1,3 @@
 miservice-fork
 requests
 cn2an
-dotenv
