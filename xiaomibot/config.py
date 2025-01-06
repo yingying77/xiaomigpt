@@ -3,8 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 import os
 from typing import Any, Iterable
-from dotenv import load_dotenv
-from pathlib import Path
+#from dotenv import load_dotenv
+#from pathlib import Path
 LATEST_ASK_API = "https://userprofile.mina.mi.com/device_profile/v2/conversation?source=dialogu&hardware={hardware}&timestamp={timestamp}&limit=2"
 COOKIE_TEMPLATE = "deviceId={device_id}; serviceToken={service_token}; userId={user_id}"
 WAKEUP_KEYWORD = "小爱同学"
@@ -47,8 +47,8 @@ class Config:
     @classmethod
     def data(cls):
         results = {}
-        env_path = Path.home() / ".env"
-        load_dotenv(dotenv_path=env_path,verbose=True)
-        results["account"] = os.getenv("MI_ACCOUNT")
-        results["password"] = os.getenv("MI_PASS")
+       # env_path = Path.home() / ".env"
+        #load_dotenv(dotenv_path=env_path,verbose=True)
+       # results["account"] = os.getenv("MI_ACCOUNT")
+        #results["password"] = os.getenv("MI_PASS")
         return cls(**results)
