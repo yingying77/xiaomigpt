@@ -10,4 +10,4 @@ COPY --from=builder /app/.venv /app/.venv
 COPY xiaomibot/  ./xiaomibot/
 COPY xiaogpt.py .
 
-ENTRYPOINT [ "/app/.env/bin/pyton3", "xiaogpt.py" ]
+ENTRYPOINT [ "/app/.venv/bin/pyton3", "xiaogpt.py" ]
