@@ -2,6 +2,7 @@ import requests
 import cn2an
 import re
 import os
+import logging
 class HASS:
     def __init__(self):
         self.url = os.getenv("HASS_URL")
@@ -10,6 +11,7 @@ class HASS:
             "Authorization": f"Bearer {self.token}",
             "content-type": "application/json",
             }
+        self.log = logging.getLogger("hass")
     def _cn2an(self,text:str):
         regx = "[一二三四五六七八九十]?[千]?[一二三四五六七八九十]?[百]?[一二三四五六七八九十]?[十]?[一二三四五六七八九十]?"
         res = re.findall(regx,text)
@@ -17,7 +19,8 @@ class HASS:
         result = text
         for i in res:
             result = result.replace(i,str(cn2an.cn2an(i)))
-        print(result)
+        self.log.info(result)
+        return result
 
     def ask(self, intent: str):
         url = f"{self.url}/api/conversation/process"
@@ -26,13 +29,13 @@ class HASS:
             "language": "zh-CN",
             }
         response = requests.post(url=url, headers=self.headers, json=data)
-        print(f"get:{url},data:{data}")
-        print(response)
+        self.log.info(f"get:{url},data:{data}")
+        self.log.info(response)
         try:
             speech = response.json().get("response").get("speech",{}).get("plain",{}).get("speech",{})
             return speech
         except:
-            print("hass error")
+            self.log.info("hass error")
         return None
     
 if __name__ == "__main__":
