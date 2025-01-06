@@ -54,7 +54,7 @@ class MIGPT:
             self.config.password,
             str(self.mi_token_home)
             )
-        print(self.config.account)
+        self.log.info(self.config.account)
         print(self.config.password)
         if self.config.account == None or self.config.password==None :
            raise Exception((f"未获取到账号密码")  )
