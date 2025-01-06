@@ -6,7 +6,7 @@ RUN python3 -m venv .venv && .venv/bin/pip install -r requirements.txt --no-cach
 
 FROM python:3.9-slim
 WORKDIR /app
-COPY --from=builder /app/.env /app/.env
+COPY --from=builder /app/.venv /app/.venv
 COPY xiaomibot/  ./xiaomibot/
 COPY xiaogpt.py .
 
