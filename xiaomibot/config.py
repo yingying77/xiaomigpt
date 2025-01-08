@@ -32,6 +32,10 @@ class Config:
     account: str = os.getenv("MI_ACCOUNT")
     password: str = os.getenv("MI_PASS")
     mi_did: str = os.getenv("MI_DID")
+    navidrome_url: str = os.getenv("NAVIDROME_URL")
+    navidrome_port: str = os.getenv("NAVIDROME_PORT")
+    navidrome_username :str = os.getenv("NAVIDROME_USER")
+    navidrome_password :str = os.getenv("NAVIDROME_PASS")
     keyword: Iterable[str] = KEY_WORD
     keyword_hass: Iterable[str] = KEY_WORD_HASS
     verbose: int = 0
