@@ -180,7 +180,6 @@ class MIGPT:
             else:
                 self.log.info("回答完毕")
             
-
     async def wakeup_xiaoai(self):
         return await miio_command(
             self.miio_service,
@@ -203,6 +202,7 @@ class MIGPT:
             await self.mina_service.text_to_speech(self.device_id, value)
         except Exception:
             pass
+    
     async def close(self):
         await self.mi_session.close()
 
